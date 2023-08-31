@@ -1,5 +1,6 @@
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
+import java.util.*;
 
 
 class MainIMP {
@@ -16,15 +17,29 @@ class MainIMP {
         name = name.substring(0,name.indexOf("Context"));
         return name;
     }
+
+    static HashMap<String, Integer> vars = new HashMap<String,Integer>();
+    static int allocate(String n) { 
+	   if (vars.containsKey(n)) 
+           return vars.get(n);
+       int pos = vars.size()+1;
+       vars.put(n,pos);
+       return pos;
+    }
+
+
     static void generateCode(ParseTree t) {
         switch (opName(t)) {
         case "Program":
             generateCode(t.getChild(0));
             return;
-        case "Atrib":
+        case "Atrib": {
+            String vName = t.getChild(0).getText();
+            int addr = allocate(vName);
             generateCode(t.getChild(2));
-            println("store %s",t.getChild(0).getText());
+            println("store %d // %s", addr, vName);
             return;
+        }
         case "Print":
             generateCode(t.getChild(1));
             println("output\n");
@@ -36,9 +51,12 @@ class MainIMP {
         case "Const":
             println("push %s",t.getText());
             return;
-        case "Var":
-            println("load %s",t.getText());
+        case "Var": {
+            String vName = t.getText();
+            int addr = allocate(vName);
+            println("load %d ;;%s",addr,vName);
             return;
+        }
         case "Op":
             generateCode(t.getChild(0));
             generateCode(t.getChild(2));
