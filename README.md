@@ -4,11 +4,13 @@ de Compiladores da POLI-UPE no Semestre 2023.1
 Para compilar o projeto digite os seguintes comandos:
 ```
 #Chama o antlr para compilar a descrição
-> java -jar antlr.org Exp.g4
+> java -jar antlr.org Imp.g4 -o gen
+> java -jar antlr.org Datatype.g4 -o gen
 #Compila os programas em java
-> javac -cp antlr.jar:. *.java
+> javac -cp antlr.jar:gen *.java gen/*.java -d gen
 #Executa o compilador
-> java -cp antlr.jar:. MainANTLR
+> java -cp antlr.jar:gen MainIMP
+> java -cp antlr.jar:gen MainDat
 
 ```
 
